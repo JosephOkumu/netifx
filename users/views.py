@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from django.views.generic import CreateView, TemplateView
+from django.contrib.auth import login
+from django.views.generic import CreateView
+from django.contrib.auth.views import LoginView  # Using Django's built-in LoginView
 
-from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
-from .models import User, Company, Customer
-
+from .forms import CustomerSignUpForm, CompanySignUpForm
+from .models import User
 
 def register(request):
     return render(request, 'users/register.html')
@@ -40,5 +40,5 @@ class CompanySignUpView(CreateView):
         return redirect('/')
 
 
-def LoginUserView(request):
-    pass
+# Replacing the custom LoginUserView with Django's built-in LoginView
+# Django’s LoginView already handles the login form functionality, so no need to define it manually
