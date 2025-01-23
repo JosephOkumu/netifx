@@ -11,10 +11,10 @@ class DateInput(forms.DateInput):
 
 
 def validate_email(value):
-    # In case the email already exists in an email input in a registration form, this function is fired
+    # In case the email already exists in a registration form, this function is triggered
     if User.objects.filter(email=value).exists():
         raise ValidationError(
-            value + " is already taken.")
+            f"{value} is already taken.")
 
 
 class CustomerSignUpForm(UserCreationForm):
@@ -26,14 +26,14 @@ class CompanySignUpForm(UserCreationForm):
 
 
 class UserLoginForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
-
-    email = forms.EmailField(widget=forms.TextInput(
-        attrs={'placeholder': 'Enter Email'}))
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs={'placeholder': 'Enter Email', 'autocomplete': 'off'})
+    )
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'}))
-
-    def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs['autocomplete'] = 'off'
+        widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'})
+    )
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        # Add custom validation for email if needed (e.g., check if it's registered)
+        return email
