@@ -176,6 +176,11 @@ button:hover {
   position: absolute;
   margin-right: 20px;
 }
+.g2 {
+
+  position: absolute;
+ left: 1200px;
+}
 
 /* ============================================================================================== */
 
@@ -192,7 +197,7 @@ button:hover {
 
 /* ======================================== Service List ======================================== */
 
-.services_list {
+/* .services_list {
   padding: 0;
   margin-bottom: 20px;
 }
@@ -209,7 +214,39 @@ pre {
 }
 .service_list_info li a:hover > pre {
   display: block;
+} */
+.services_list {
+  padding: 0;
+  margin-bottom: 20px;
 }
+
+.service {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.service p.company-name {
+  text-align: right;
+}
+
+pre {
+  display: none;
+}
+
+.service_list_info {
+  padding: 0 30px;
+}
+
+.service_list_info li {
+  list-style-type: none;
+}
+
+.service_list_info li a:hover > pre {
+  display: block;
+}
+
 
 .line {
   width: 100%;
@@ -243,6 +280,10 @@ pre {
 
 .list_services_profile {
   font-size: x-large;
+}
+#most {
+ 
+  margin-top: 10px;
 }
 
 /* ============================================================================================== */
