@@ -10,12 +10,15 @@ class User(AbstractUser):
 
 
 class Customer(models.Model):
-    pass
+    user_id = models.AutoField(primary_key=True)
+    birth = models.DateField(null=True, blank=True)
+    def __str__(self):
+        return str(self.id) + ' - ' + self.user.username
+
 
 
 class Company(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
+    user_id = models.AutoField(primary_key=True)
     field = models.CharField(max_length=70, choices=(('Air Conditioner', 'Air Conditioner'),
                                                      ('All in One', 'All in One'),
                                                      ('Carpentry', 'Carpentry'),
@@ -32,8 +35,7 @@ class Company(models.Model):
                                                      ('Painting', 'Painting'),
                                                      ('Plumbing', 'Plumbing'),
                                                      ('Water Heaters', 'Water Heaters')), blank=False, null=False)
-    rating = models.IntegerField(
-        validators=[MaxValueValidator(5), MinValueValidator(0)], default=0)
+   
 
     def __str__(self):
         return str(self.user.id) + ' - ' + self.user.username
