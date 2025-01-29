@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.views.generic import CreateView
-from django.contrib.auth.views import LoginView  # Using Django's built-in LoginView
+from django.contrib.auth import login, authenticate
+from django.views.generic import CreateView, TemplateView
 
-from .forms import CustomerSignUpForm, CompanySignUpForm
-from .models import User
+from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
+from .models import User, Company, Customer
+from django.views.decorators.csrf import csrf_protect
+
 
 def register(request):
     return render(request, 'users/register.html')
@@ -21,8 +22,22 @@ class CustomerSignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
+       
+    #    a confirmer
+        user.is_customer = 1
+        user.is_company = 0
+
+        # a confirmer
+        user.save()
+        birth = form.cleaned_data.get('date_of_birth')
+        customer = Customer.objects.create(user_id=user.id,birth=birth)
+      
+
+        customer.save()
         login(self.request, user)
         return redirect('/')
+    # est ce que form c'est form_class?
+
 
 
 class CompanySignUpView(CreateView):
@@ -35,10 +50,32 @@ class CompanySignUpView(CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        user = form.save()
+        user = form.save(commit=False)
+        user.is_customer = 0
+        user.is_company = 1
+        user.save()
+        field = form.cleaned_data.get('field')
+        company = Company.objects.create(user_id=user.id,field=field)
+        company.save()
+       
+
+       
+
         login(self.request, user)
         return redirect('/')
-
-
-# Replacing the custom LoginUserView with Django's built-in LoginView
-# Django’s LoginView already handles the login form functionality, so no need to define it manually
+@csrf_protect
+def login_view(request):
+    if request.method == 'POST':
+        form = UserLoginForm(request.POST)
+        if form.is_valid():
+            # connecter l'utilisateur
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('/')
+    else:
+        form = UserLoginForm()
+    return render(request, 'users/login.html', {'form': form})
+# il faut aussi que il n'y a plus que logout et que profil aparraisse dans la navbar
