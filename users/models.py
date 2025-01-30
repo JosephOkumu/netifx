@@ -42,8 +42,6 @@ class Company(models.Model):
         blank=False, 
         null=False
     )
-    # Automatically adds the timestamp of when the company was created
-    created_at = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
         # String representation that combines the company’s user ID and username
