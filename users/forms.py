@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 from .models import User, Company, Customer
 
-
+# Custom date input field for forms
 class DateInput(forms.DateInput):
     input_type = 'date'
 
@@ -17,15 +17,7 @@ def validate_email(value):
             value + " is already taken.")
 
 
-# class CustomerSignUpForm(UserCreationForm):
-#    email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Enter your email'}), help_text='Required. Enter a valid email address.')
-# c'est la qu'on va creer le formulaire pour customer
-# email
-# password
-# password confirmation
-# username
-# date of birth
-
+# Customer sign-up form with email, password, and date of birth
 class CustomerSignUpForm(UserCreationForm):
     email = forms.EmailField(
         max_length=254, help_text='Required. Enter a valid email address.',
@@ -49,9 +41,8 @@ class CustomerSignUpForm(UserCreationForm):
         fields = UserCreationForm.Meta.fields + ('username', 'password1', 'password2','email', 'date_of_birth')
 
 
-
+# Company sign-up form with email, username, password, and field of work
 class CompanySignUpForm(UserCreationForm):
-    # il faut faire la liste deroulante field
     
     email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
     username = forms.CharField(max_length=30, help_text='Required. Enter a username.')
@@ -65,6 +56,7 @@ class CompanySignUpForm(UserCreationForm):
         model = User
         fields = ( 'username', 'password1', 'password2', 'email','field')
 
+# User login form with username and password fields
 class UserLoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(
         attrs={'placeholder': 'Enter Username'}))
@@ -73,4 +65,4 @@ class UserLoginForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(UserLoginForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs['autocomplete'] = 'off'
+        self.fields['username'].widget.attrs['autocomplete'] = 'off'  # Disable autocomplete for username field
