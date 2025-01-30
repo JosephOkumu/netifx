@@ -39,7 +39,7 @@ class Service_Request(models.Model):
     user_id = models.IntegerField()
     service_id =models.IntegerField()
     adress = models.CharField(max_length=100)
-    nbre_hour = models.DecimalField(decimal_places=1, max_digits=100)
+    num_hour = models.DecimalField(decimal_places=1, max_digits=100)
     price_hour = models.DecimalField(decimal_places=2, max_digits=100)
     service_name= models.TextField()
     name_company= models.TextField()
