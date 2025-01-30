@@ -35,7 +35,8 @@ class Company(models.Model):
                                                      ('Painting', 'Painting'),
                                                      ('Plumbing', 'Plumbing'),
                                                      ('Water Heaters', 'Water Heaters')), blank=False, null=False)
-   
+    
+    created_at = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
         return str(self.user.id) + ' - ' + self.user.username
