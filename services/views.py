@@ -1,26 +1,22 @@
-
-# il reste plus qu'a faire les services les plus demandes et pas crash quand on est pas log
-
+# imports
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 
 from users.models import Company, Customer, User
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Service,Service_Request
-from .forms import CreateNewService,RequestServiceForm
+from .models import Service, Service_Request
+from .forms import CreateNewService, RequestServiceForm
 from django.contrib.auth.decorators import login_required
 
-
-
-
-
+# Function to get the service field values based on the user's company
 def get_field_value(user_id):
     try:
-        company = Company.objects.get(user_id=user_id)
-        field_value = company.field
-        if field_value != 'All in One':
-            return [field_value]
+        company = Company.objects.get(user_id=user_id)  
+        field_value = company.field  
+        if field_value != 'All in One':  
+            return [field_value]  
         else:
+            # If the field is 'All in One', return a predefined list of service types
             return [
                 'Air Conditioner', 
                 'Carpentry',
@@ -34,97 +30,92 @@ def get_field_value(user_id):
                 'Plumbing',
                 'Water Heaters'
             ]
-    except Company.DoesNotExist:
-        return []
-@login_required
+    except Company.DoesNotExist:  
+        return []  # Return an empty list if the company is not found
+
+@login_required  # This decorator ensures the user is logged in to access this view
 def service_list(request):
-    
-    # user_id = request.user.id
-    # user = User.objects.get(id=user_id)
-        
-    # if user.is_company:
-    
-    #  services = Service.objects.filter(company_id=user_id).order_by("-date")
-    # elif user.is_customer:
-    services = Service.objects.all().order_by("-date")
-    # else :
-    #    crrer une redirection vers la connexion
-    return render(request, 'services/list.html', {'services': services})
+    services = Service.objects.all().order_by("-date")  
+    return render(request, 'services/list.html', {'services': services})  # Render the service list template
 
-
+# Function to display a single service based on its ID
 def index(request, id):
-    service = Service.objects.get(id=id)
-    return render(request, 'services/single_service.html', {'service': service})
+    service = Service.objects.get(id=id)  
+    return render(request, 'services/single_service.html', {'service': service})  
 
-
-
+# Function to get the company name for a given user ID
 def get_company_name(user_id):
     try:
         company = User.objects.get(id=user_id)
-        field_value = company.username
-        return field_value
-    except Company.DoesNotExist:
-        return None
+        field_value = company.username  
+        return field_value  
+    except Company.DoesNotExist:  
+        return None  
 
-def service_field(request,field):
-    print(field)
+# Function to filter services based on the field (service type)
+def service_field(request, field):
+    print(field)  
     try:
-
+        # Filter services by the field (case-insensitive exact match)
         services = Service.objects.filter(field__iexact=field)
-        # for service in services:
-        # print(service.name)
-        # Effectuez les opérations souhaitées avec l'objet "service"
-        return render(request, 'services/list.html', {'services': services, })
-    except ObjectDoesNotExist:
-        # Gérez le cas où l'objet "Service" n'existe pas
-        print("existe pas")
-        
-        return redirect('/')
-     
-     
-def create(request):
-    # il faut aussi s'occuper de all/in one pour la liste deroulante
-    user_id = request.user.id
-    field_value = get_field_value(user_id)
-    print(field_value)
-    if request.method == 'POST':
-        form = CreateNewService(request.POST, user_id=user_id)
-        if form.is_valid():
-         cleaned_data = form.cleaned_data
-        name=(cleaned_data['name'])
-        description=(cleaned_data['description'])
-        price_hour=(cleaned_data['price_hour'])
-        field=(cleaned_data['field'])
-        name_company=get_company_name(user_id)
-        service = Service.objects.create(name=name,description=description,price_hour=price_hour, field=field,name_company= name_company,  company_id=user_id)
-        service.save()
-        return redirect('/')
-    else:
-       form = CreateNewService(user_id=user_id)
+        return render(request, 'services/list.html', {'services': services})  # Render the filtered service list
+    except ObjectDoesNotExist:  
+        print("Does not exist") 
+        return redirect('/')  # Redirect to the home page
 
+# Function to create a new service
+def create(request):
+    user_id = request.user.id  
+    field_value = get_field_value(user_id)  
+    print(field_value)  
+    
+    if request.method == 'POST':  # If the form is submitted via POST
+        form = CreateNewService(request.POST, user_id=user_id)  # Create the form with POST data
+        if form.is_valid(): 
+            cleaned_data = form.cleaned_data  # Get the cleaned data from the form
+            name = cleaned_data['name'] 
+            description = cleaned_data['description']  
+            price_hour = cleaned_data['price_hour']  
+            field = cleaned_data['field']  
+            name_company = get_company_name(user_id)  
+            service = Service.objects.create(name=name, description=description, price_hour=price_hour, field=field, name_company=name_company, company_id=user_id)  
+            service.save()  # Save the new service to the database
+            return redirect('/') 
+    else:  
+        form = CreateNewService(user_id=user_id)  # Create an empty form with the user ID
+
+   
     context = {'form': form, 'field_value': field_value}
     return render(request, 'services/create.html', context=context)
 
+# Function to request a service
 def request_service(request, id):
-    # Get the service object with the given id
-    service = Service.objects.get(id=id)
-    # If the form is submitted
-    if request.method == 'POST':
+    service = Service.objects.get(id=id)  # Retrieve the service by its ID
+
+    if request.method == 'POST':  # If the form is submitted via POST
         # Create a form instance with the POST data
         form = RequestServiceForm(request.POST)
-        # Check if the form is valid
+        
         if form.is_valid():
-            # Save the form data to the database
-            data = form.cleaned_data
-            print(data)
+            data = form.cleaned_data  # Get the cleaned data from the form
+            print(data)  
 
-            # Here you can save the form data to the database, for example:
-            requestService = Service_Request.objects.create(user_id=request.user.id,service_id=service.id, adress=data['adress'], nbre_hour=data['nbre_hour'],price_hour=service.price_hour,service_name=service.name,name_company=service.name_company,total_price=service.price_hour*data["nbre_hour"],field =service.field)
-            requestService.save()
-            return redirect('/')
-    # If the form is not submitted
-    else:
-        # Create a new form instance
-        form = RequestServiceForm()
-    # Render the request_service.html template with the service and the form instances
+            # Create a new service request based on the form data
+            requestService = Service_Request.objects.create(
+                user_id=request.user.id,
+                service_id=service.id,
+                adress=data['adress'], 
+                num_hour=data['num_hour'],
+                price_hour=service.price_hour,
+                service_name=service.name,
+                name_company=service.name_company,
+                total_price=service.price_hour * data["num_hour"],
+                field=service.field
+            )
+            requestService.save()  # Save the service request to the database
+            return redirect('/')  
+    else:  
+        form = RequestServiceForm()  # Create an empty form
+
+    # Render the request service page with the service details and the form
     return render(request, 'services/request_service.html', {'service': service, 'form': form})
