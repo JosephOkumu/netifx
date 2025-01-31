@@ -110,7 +110,7 @@ For major changes, please open an issue first to discuss the proposed changes.
 ---
 
 ## Author
-[josotieno]( git clone https://github.com/JosephOkumu)
+[Joe OKumu](https://github.com/JosephOkumu)
 
 ---
 
