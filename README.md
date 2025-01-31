@@ -12,19 +12,6 @@ To run this project, you need to have Python 3.x and Django installed on your sy
     ```bash
     git clone https://github.com/JosephOkumu/service-management-platform
 
-## Description
-This project is a web-based platform designed to connect customers with service providers for various home-related tasks, such as fixing a bidet, painting walls, home cleaning, and more. Built using Django (v3.1.14), a Python web framework, the platform allows users to register as either a **Customer** or a **Company**, request services, and manage their profiles. 
-
----
-
-## Documentation
-
-### Installation
-To run this project, you need to have Python 3.x and Django installed on your system. Follow these steps to set up the project:
-
-1. **Clone the repository**:
-    ```bash
-     git clone https://github.com/JosephOkumu/service-management-platform
     ```
 
 2. **Navigate into the project directory**:
