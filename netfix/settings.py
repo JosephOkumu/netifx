@@ -76,6 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'netfix.wsgi.application'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
