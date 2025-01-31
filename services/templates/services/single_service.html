@@ -9,6 +9,7 @@
     </div>
     <h3>{{service.field}}</h3>
     <p style="text-align: left;">{{service.description}}</p>
+    <p class="created_at">Created on: {{ service.date|date:"d M Y" }}</p>
     {% if request.user.is_customer %}
         <a href="/services/{{service.id}}/request_service/" class="like_button">Request Service</a>
     {% endif %}
